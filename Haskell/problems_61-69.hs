@@ -80,12 +80,47 @@ height Empty = 0
 height (Branch _ l r) = maximum [height l, height r] + 1
 
 layout2 :: Tree a -> Tree (a, (Int, Int))
-layout2 t = lay' t (2^((height t)-1)) 1
+layout2 t = lay2 t (2^((height t)-1)) 1
     where
-        lay' Empty x y = Empty
-        lay' (Branch elem l r) x y = (Branch (elem, (x, y)) l' r')
+        lay2 Empty x y = Empty
+        lay2 (Branch elem l r) x y = (Branch (elem, (x, y)) l' r')
             where
-                l' = lay' l (x-((2^((height l)))`div`2)) (y+1)
-                r' = lay' r (x+((2^((height r)))`div`2)) (y+1)
+                l' = lay2 l (x-((2^((height l)))`div`2)) (y+1)
+                r' = lay2 r (x+((2^((height r)))`div`2)) (y+1)
 
 -- Problem 66
+
+fRight :: Tree (a, (Int, Int)) -> Int
+fRight Empty = 0
+fRight (Branch (n, (x, y)) l r) = maximum [0, fR x l, fR x r]
+    where
+        fR _ Empty = 0
+        fR i (Branch (n, (x, y)) l r) = maximum [x - i, fR i l, fR i r]
+
+fLeft :: Tree (a, (Int, Int)) -> Int
+fLeft Empty = 0
+fLeft (Branch (n, (x, y)) l r) = maximum [0, fL x l, fL x r]
+    where
+        fL _ Empty = 0
+        fL i (Branch (n, (x, y)) l r) = maximum [i - x, fL i l, fL i r]
+
+shiftT :: Int -> Tree (a, (Int, Int)) -> Tree (a, (Int, Int))
+shiftT _ Empty = Empty
+shiftT i (Branch (n, (x, y)) l r) = (Branch (n, (x+i,y)) l' r')
+    where
+        l' = (shiftT i l)
+        r' = (shiftT i r)
+
+layout3 :: Tree a -> Tree (a, (Int, Int))
+layout3 t = lay3 t 1
+    where
+        lay3 Empty _ = Empty
+        lay3 (Branch n l r) y = (Branch (n, (x, y)) l' r'')
+            where
+                l'  = lay3 l (y+1)
+                r'  = lay3 r (y+1)
+                x   = 1 + $ (fRight l') + (fLeft r')`div`2
+                r'' = shiftT (x) r'
+
+tree1 = Branch 'a' (Branch 'b' Empty Empty) (Branch 'c' Empty Empty)
+tree2 = Branch 'n' (Branch 'k' (Branch 'c' (Branch 'a' Empty Empty) (Branch 'e' (Branch 'd' Empty Empty) (Branch 'g' Empty Empty) ) ) (Branch 'm' Empty Empty) ) (Branch 'u' (Branch 'p' Empty (Branch 'q' Empty Empty) ) Empty )
