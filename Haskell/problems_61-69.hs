@@ -120,3 +120,7 @@ layout3 t = lay3 t 1
 
 tree1 = Branch 'a' (Branch 'b' Empty Empty) (Branch 'c' Empty Empty)
 tree2 = Branch 'n' (Branch 'k' (Branch 'c' (Branch 'a' Empty Empty) (Branch 'e' (Branch 'd' Empty Empty) (Branch 'g' Empty Empty) ) ) (Branch 'm' Empty Empty) ) (Branch 'u' (Branch 'p' Empty (Branch 'q' Empty Empty) ) Empty )
+
+-- Problem 67
+
+
